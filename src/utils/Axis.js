@@ -1,9 +1,9 @@
-import Color from './Color';
+import Color from "./Color";
 class Axis extends Color {
   constructor(ctx, x = 0, y = 0) {
     super(ctx);
     if (!ctx) {
-      console.log('CTX is requierd');
+      console.log("CTX is requierd");
       return;
     }
     this.ctx = ctx;
@@ -40,19 +40,36 @@ class Axis extends Color {
     ctx.fill();
     ctx.closePath();
   }
-  drawBaseLines() {
-    this.drawLines('x');
-    this.drawLines('y');
-    this.drawStepOnLine('x');
-    this.drawStepOnLine('y');
+  drawBackgroundGrid() {
+    const { curStep } = this;
+    let x = this.y;
+    let y = this.x;
+    while (y > 0) {
+      this.drawLines("y", (y -= curStep));
+    }
+    while (y < this.canvas.width) {
+      this.drawLines("y", (y += curStep));
+    }
+    while (x > 0) {
+      this.drawLines("x", null, (x -= curStep));
+    }
+    while (x < this.canvas.height) {
+      this.drawLines("x", null, (x += curStep));
+    }
   }
-  drawLines(way) {
-    const { ctx, x, y } = this;
+  drawBaseLines() {
+    this.drawLines("x");
+    this.drawLines("y");
+    this.drawStepOnLine("x");
+    this.drawStepOnLine("y");
+  }
+  drawLines(way, x = this.x, y = this.y) {
+    const { ctx } = this;
     ctx.beginPath();
-    if (way === 'x') {
+    if (way === "x") {
       ctx.moveTo(0, y);
       ctx.lineTo(ctx.canvas.width, y);
-    } else if (way === 'y') {
+    } else if (way === "y") {
       ctx.moveTo(x, 0);
       ctx.lineTo(x, ctx.canvas.height);
     }
@@ -63,9 +80,9 @@ class Axis extends Color {
     const { ctx, x, y, curStep, size } = this;
     let count = 1;
     let point;
-    const general = [size / 1.5, 0, 2 * Math.PI];
+    const general = [size / 2, 0, 2 * Math.PI];
     ctx.beginPath();
-    if (way === 'y') {
+    if (way === "y") {
       point = y - curStep;
       while (point > 0) {
         ctx.arc(x, point, ...general);
@@ -73,7 +90,7 @@ class Axis extends Color {
         point -= curStep;
         ++count;
       }
-    } else if (way === 'x') {
+    } else if (way === "x") {
       point = x - curStep;
       while (point > 0) {
         ctx.arc(point, y, ...general);

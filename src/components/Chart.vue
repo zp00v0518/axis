@@ -26,7 +26,12 @@ export default {
     draw() {
       const {ctx, canvas, axis} = this;
       ctx.clearRect(0,0,canvas.width, canvas.height)
+      this.axis.setColor({ stroke: "#F0F0F2" });
+      this.axis.drawBackgroundGrid();
+      this.axis.setColor({ stroke: "red" });
       axis.draw();
+      this.axis.resetColor();
+
     },
     zoomingCanvas(event){
       const {wheelDelta} = event;
@@ -47,7 +52,6 @@ export default {
     this.setSize();
     this.axis = new Axis(this.ctx);
     this.axis.setOrign(this.canvas.width / 2, this.canvas.height / 2);
-    // this.axis.setColor({ fill: "red" });
     this.axis.setCenterSize(3);
     this.draw();
     window.addEventListener("resize", this.draw);
