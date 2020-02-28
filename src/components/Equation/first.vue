@@ -5,14 +5,14 @@
       <input type="text" v-model="vars[index]" class="vars__item--value" />
     </div>
     <div class="vars__borders">
-      <div class="vars__item vars__borders__item">
+      <!-- <div class="vars__item vars__borders__item">
         <span class="vars__item--title">x от</span>
         <input type="text" v-model="borders.minX" class="vars__item--value" />
-      </div>
-      <div class="vars__item vars__borders__item">
+      </div>-->
+      <!-- <div class="vars__item vars__borders__item">
         <span class="vars__item--title">x до</span>
         <input type="text" v-model="borders.maxX" class="vars__item--value" />
-      </div>
+      </div>-->
       <!-- <div class="vars__item vars__borders__item">
         <span class="vars__item--title">y от</span>
         <input type="text" v-model="borders.yMin" class="vars__item--value" />
@@ -32,7 +32,7 @@ export default {
   data() {
     return {
       vars: {
-        a: '',
+        a: 3,
       },
       borders,
     };
@@ -53,20 +53,19 @@ export default {
     },
     drawFunction(data, axis) {
       const { ctx, zoom, drawStep, centerX, centerY } = axis;
-      const { vars, borders } = data;
-			const { minX, maxX } = borders;
+      const { vars } = data;
+      const maxX = parseFloat(vars.a);
+      const minX = 0 - vars.a;
       const yFunc = x => x * x;
       axis.setColor({ stroke: 'blue' });
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 0.2 * zoom;
       ctx.beginPath();
-      for (let i = minX; i <= maxX; i += drawStep) {
-				const x = i * zoom +  centerX;
-				const y = (yFunc(i) * zoom) + centerY;
-				console.log(x, y);
+      for (let i = minX; i <= maxX + drawStep / 2; i += drawStep) {
+        const x = i * zoom + centerX;
+        const y = yFunc(i) * zoom + centerY;
         ctx[i ? 'lineTo' : 'moveTo'](x, y);
-			}
-			ctx.stroke();
-			console.log(123)
+      }
+      ctx.stroke();
     },
   },
 };

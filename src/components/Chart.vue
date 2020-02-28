@@ -27,7 +27,7 @@ export default {
       const { data, func } = event;
       this.drawData = data;
       this.drawFunc = func;
-      func(data, this.axis);
+      this.draw();
     },
     setSize() {
       this.canvas = this.$refs.canvas;
@@ -72,7 +72,7 @@ export default {
         this.axis = new Axis(this.ctx);
       }
       this.axis.setOrign(this.canvas.width / 2, this.canvas.height / 2);
-      this.axis.circleRadius(3);
+      this.axis.setCircleRadius(3);
     },
     handlerResize() {
       if (this.timerId) {

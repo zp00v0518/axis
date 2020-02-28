@@ -1,19 +1,19 @@
-import Color from "./Color";
+import Color from './Color';
 class Axis extends Color {
   constructor(ctx, x = 0, y = 0) {
     super(ctx);
     if (!ctx) {
-      console.log("CTX is requierd");
+      console.log('CTX is requierd');
       return;
     }
     this.ctx = ctx;
     this.canvas = this.ctx.canvas;
     this.centerX = x;
     this.centerY = y;
-    this.size = 1;
-    this.zoom = 5;
+    this.circleRadius = 1;
+    this.zoom = 10;
     this.baseStep = 5;
-    this.drawStep = 0.5;
+    this.drawStep = 0.2;
     this.curStep = this.baseStep * this.zoom;
   }
   setOrign(x, y) {
@@ -21,7 +21,7 @@ class Axis extends Color {
     this.centerY = y;
   }
   setZoom(num) {
-    this.zoom = num <= 0 ? 1 : num;
+    this.zoom = num <= 2 ? 2 : num;
     this.curStep = this.baseStep * this.zoom;
   }
   setBaseStep(num) {
@@ -30,17 +30,18 @@ class Axis extends Color {
   setDrawStep(num) {
     this.drawStep = num;
   }
-  circleRadius(size) {
-    this.size = size;
+  setCircleRadius(circleRadius) {
+    this.circleRadius = circleRadius;
   }
   draw() {
     this.drawCenter();
     this.drawBaseLines();
   }
   drawCenter() {
-    const { ctx, centerX, centerY, size } = this;
+    const { ctx, centerX, centerY, circleRadius, zoom } = this;
     ctx.beginPath();
-    ctx.arc(centerX, centerY, size, 0, 2 * Math.PI);
+    const radius = (circleRadius * zoom) / 6;
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
     ctx.fill();
     ctx.closePath();
   }
@@ -49,31 +50,31 @@ class Axis extends Color {
     let x = this.centerY;
     let y = this.centerX;
     while (y > 0) {
-      this.drawLines("y", (y -= curStep));
+      this.drawLines('y', (y -= curStep));
     }
     while (y < this.canvas.width) {
-      this.drawLines("y", (y += curStep));
+      this.drawLines('y', (y += curStep));
     }
     while (x > 0) {
-      this.drawLines("x", null, (x -= curStep));
+      this.drawLines('x', null, (x -= curStep));
     }
     while (x < this.canvas.height) {
-      this.drawLines("x", null, (x += curStep));
+      this.drawLines('x', null, (x += curStep));
     }
   }
   drawBaseLines() {
-    this.drawLines("x");
-    this.drawLines("y");
-    this.drawStepOnLine("x");
-    this.drawStepOnLine("y");
+    this.drawLines('x');
+    this.drawLines('y');
+    this.drawStepOnLine('x');
+    this.drawStepOnLine('y');
   }
   drawLines(way, x = this.centerX, y = this.centerY) {
     const { ctx } = this;
     ctx.beginPath();
-    if (way === "x") {
+    if (way === 'x') {
       ctx.moveTo(0, y);
       ctx.lineTo(ctx.canvas.width, y);
-    } else if (way === "y") {
+    } else if (way === 'y') {
       ctx.moveTo(x, 0);
       ctx.lineTo(x, ctx.canvas.height);
     }
@@ -81,12 +82,13 @@ class Axis extends Color {
     ctx.closePath();
   }
   drawStepOnLine(way) {
-    const { ctx, centerX, centerY, curStep, size } = this;
+    const { ctx, centerX, centerY, curStep, circleRadius, zoom } = this;
     let count = 1;
     let point;
-    const general = [size / 2, 0, 2 * Math.PI];
+    const radius = ((circleRadius / 2) * zoom) / 6;
+    const general = [radius, 0, 2 * Math.PI];
     ctx.beginPath();
-    if (way === "y") {
+    if (way === 'y') {
       point = centerY - curStep;
       while (point > 0) {
         ctx.arc(centerX, point, ...general);
@@ -94,7 +96,7 @@ class Axis extends Color {
         point -= curStep;
         ++count;
       }
-    } else if (way === "x") {
+    } else if (way === 'x') {
       point = centerX - curStep;
       while (point > 0) {
         ctx.arc(point, centerY, ...general);
