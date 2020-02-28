@@ -17,7 +17,14 @@ export default {
       timerId: null
     };
   },
+  created () {
+    this.$bus.$on('draw-func', this.drawMathFunc)
+  },
   methods: {
+    drawMathFunc(event){
+      const {data, func} = event;
+      func(data, this.axis)
+    },
     setSize() {
       this.canvas = this.$refs.canvas;
       const parent = this.canvas.parentElement;

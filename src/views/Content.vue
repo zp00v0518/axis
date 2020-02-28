@@ -6,6 +6,7 @@
     <div class="content__chart">
       <Chart/>
     </div>
+
   </div>
 </template>
 
@@ -27,6 +28,7 @@ export default {
   &__control{
     border: 1px solid;
     width: 20%;
+    min-width: 200px;
   }
   &__chart{
     border: 1px solid;
