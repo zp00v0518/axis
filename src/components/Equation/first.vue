@@ -2,7 +2,7 @@
   <div class="vars">
     <div v-for="(value, index) in vars" :key="index" class="vars__item">
       <span class="vars__item--title">{{index}}</span>
-      <input type="text" v-model="vars[index]" class="vars__item--value" />
+      <input type="number" v-model="vars[index]" class="vars__item--value" />
     </div>
     <div class="vars__borders"></div>
   </div>
@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     drawFunction(data, axis) {
-      const { ctx, zoom, drawStep, centerX, centerY } = axis;
+      const { ctx, zoom, drawStep, centerX, centerY, curStep } = axis;
       const { vars } = data;
       const maxX = parseFloat(vars.a);
       const minX = 0 - vars.a;
@@ -34,8 +34,8 @@ export default {
       ctx.lineWidth = 0.2 * zoom;
       ctx.beginPath();
       for (let i = minX; i <= maxX + drawStep / 2; i += drawStep) {
-        const x = i * zoom + centerX;
-        const y = yFunc(i) * zoom + centerY;
+        const x = i * curStep + centerX;
+        const y = -yFunc(i) * curStep + centerY;
         ctx[i ? 'lineTo' : 'moveTo'](x, y);
       }
       ctx.stroke();
