@@ -31,6 +31,7 @@ export default {
   &__chart{
     border: 1px solid;
     flex-grow: 2;
+    width: 80%;
   }
 }
 </style>
