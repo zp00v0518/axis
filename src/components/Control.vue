@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       equation_list,
-      activeId: null,
+      activeId: 'second',
     };
   },
   methods: {

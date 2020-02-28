@@ -7,19 +7,19 @@
     <div class="vars__borders">
       <div class="vars__item vars__borders__item">
         <span class="vars__item--title">x от</span>
-        <input type="text" v-model="borders.xMin" class="vars__item--value" />
+        <input type="text" v-model="borders.minX" class="vars__item--value" />
       </div>
       <div class="vars__item vars__borders__item">
         <span class="vars__item--title">x до</span>
-        <input type="text" v-model="borders.xMax" class="vars__item--value" />
+        <input type="text" v-model="borders.maxX" class="vars__item--value" />
       </div>
       <div class="vars__item vars__borders__item">
         <span class="vars__item--title">y от</span>
-        <input type="text" v-model="borders.yMin" class="vars__item--value" />
+        <input type="text" v-model="borders.minY" class="vars__item--value" />
       </div>
       <div class="vars__item vars__borders__item">
         <span class="vars__item--title">y до</span>
-        <input type="text" v-model="borders.yMax" class="vars__item--value" />
+        <input type="text" v-model="borders.maxY" class="vars__item--value" />
       </div>
     </div>
   </div>
@@ -27,30 +27,40 @@
 
 <script>
 import { borders } from '../../utils';
+import mixin from './mixin';
+
 export default {
   name: 'second',
+  mixins: [mixin],
   data() {
     return {
       vars: {
-        a: '',
-        b: '',
+        a: 2,
+        b: 3,
+        c: 2,
       },
       borders,
     };
   },
-  created() {
-    this.$bus.$on('start-draw', this.sendData);
-  },
-  beforeDestroy() {
-    this.$bus.$off('start-draw', this.sendData);
-  },
   methods: {
-    sendData() {
-			this.$bus.$emit('draw-func', {data: this.vars, func: this.drawFunction})
-		},
-		drawFunction(data, ctx){
-			console.log(ctx.canvas)
-		}
+    drawFunction(data, axis) {
+      const { ctx, zoom, drawStep, centerX, centerY, curStep } = axis;
+      const { vars, borders } = data;
+      const { minX, maxX } = borders;
+      function yFunc(x, vars) {
+        const { a, b, c } = vars;
+        return a * Math.sqrt(x, 2) + b * x + c;
+      }
+      axis.setColor({ stroke: 'blue' });
+      ctx.lineWidth = 0.2 * zoom;
+      ctx.beginPath();
+      for (let i = minX; i <= maxX; i += drawStep) {
+        const x = i * curStep + centerX;
+        const y = yFunc(i, vars) * curStep + centerY;
+        ctx[i ? 'lineTo' : 'moveTo'](x, y);
+      }
+      ctx.stroke();
+    },
   },
 };
 </script>
