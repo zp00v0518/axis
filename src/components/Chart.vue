@@ -50,7 +50,9 @@ export default {
       this.canvas = this.$refs.canvas;
       this.ctx = this.canvas.getContext("2d");
       this.setSize();
-      this.axis = new Axis(this.ctx);
+      if (!this.axis){
+        this.axis = new Axis(this.ctx);
+      }
       this.axis.setOrign(this.canvas.width / 2, this.canvas.height / 2);
       this.axis.setCenterSize(3);
     },
@@ -61,8 +63,7 @@ export default {
       this.timerId = setTimeout(() => {
         this.init();
         this.draw();
-        console.log(123)
-      }, 300);
+      }, 250);
     }
   },
   mounted() {
