@@ -4,31 +4,17 @@
       <span class="vars__item--title">{{index}}</span>
       <input type="text" v-model="vars[index]" class="vars__item--value" />
     </div>
-    <div class="vars__borders">
-      <!-- <div class="vars__item vars__borders__item">
-        <span class="vars__item--title">x от</span>
-        <input type="text" v-model="borders.minX" class="vars__item--value" />
-      </div>-->
-      <!-- <div class="vars__item vars__borders__item">
-        <span class="vars__item--title">x до</span>
-        <input type="text" v-model="borders.maxX" class="vars__item--value" />
-      </div>-->
-      <!-- <div class="vars__item vars__borders__item">
-        <span class="vars__item--title">y от</span>
-        <input type="text" v-model="borders.yMin" class="vars__item--value" />
-      </div>-->
-      <!-- <div class="vars__item vars__borders__item">
-        <span class="vars__item--title">y до</span>
-        <input type="text" v-model="borders.yMax" class="vars__item--value" />
-      </div>-->
-    </div>
+    <div class="vars__borders"></div>
   </div>
 </template>
 
 <script>
 import { borders } from '../../utils';
+import mixin from './mixin';
+
 export default {
   name: 'first',
+  mixins: [mixin],
   data() {
     return {
       vars: {
@@ -37,20 +23,7 @@ export default {
       borders,
     };
   },
-  created() {
-    this.$bus.$on('start-draw', this.sendData);
-  },
-  beforeDestroy() {
-    this.$bus.$off('start-draw', this.sendData);
-  },
   methods: {
-    sendData() {
-      const data = {
-        vars: this.vars,
-        borders: this.borders,
-      };
-      this.$bus.$emit('draw-func', { data, func: this.drawFunction });
-    },
     drawFunction(data, axis) {
       const { ctx, zoom, drawStep, centerX, centerY } = axis;
       const { vars } = data;
