@@ -1,8 +1,8 @@
 const borders = {
-  xMax: 5,
-  xMin: -5,
-  yMax: 5,
-  yMin: -5,
+  maxX: 5,
+  minX: -5,
+  maxY: 5,
+  minY: -5,
 };
 
 export default borders;

@@ -7,20 +7,20 @@
     <div class="vars__borders">
       <div class="vars__item vars__borders__item">
         <span class="vars__item--title">x от</span>
-        <input type="text" v-model="borders.xMin" class="vars__item--value" />
+        <input type="text" v-model="borders.minX" class="vars__item--value" />
       </div>
       <div class="vars__item vars__borders__item">
         <span class="vars__item--title">x до</span>
-        <input type="text" v-model="borders.xMax" class="vars__item--value" />
+        <input type="text" v-model="borders.maxX" class="vars__item--value" />
       </div>
-      <div class="vars__item vars__borders__item">
+      <!-- <div class="vars__item vars__borders__item">
         <span class="vars__item--title">y от</span>
         <input type="text" v-model="borders.yMin" class="vars__item--value" />
-      </div>
-      <div class="vars__item vars__borders__item">
+      </div>-->
+      <!-- <div class="vars__item vars__borders__item">
         <span class="vars__item--title">y до</span>
         <input type="text" v-model="borders.yMax" class="vars__item--value" />
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -33,7 +33,6 @@ export default {
     return {
       vars: {
         a: '',
-        b: '',
       },
       borders,
     };
@@ -46,10 +45,28 @@ export default {
   },
   methods: {
     sendData() {
-      this.$bus.$emit('draw-func', { data: this.vars, func: this.drawFunction });
+      const data = {
+        vars: this.vars,
+        borders: this.borders,
+      };
+      this.$bus.$emit('draw-func', { data, func: this.drawFunction });
     },
-    drawFunction(data, ctx) {
-      console.log(ctx.canvas);
+    drawFunction(data, axis) {
+      const { ctx, zoom, drawStep, centerX, centerY } = axis;
+      const { vars, borders } = data;
+			const { minX, maxX } = borders;
+      const yFunc = x => x * x;
+      axis.setColor({ stroke: 'blue' });
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      for (let i = minX; i <= maxX; i += drawStep) {
+				const x = i * zoom +  centerX;
+				const y = (yFunc(i) * zoom) + centerY;
+				console.log(x, y);
+        ctx[i ? 'lineTo' : 'moveTo'](x, y);
+			}
+			ctx.stroke();
+			console.log(123)
     },
   },
 };

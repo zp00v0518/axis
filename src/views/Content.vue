@@ -6,7 +6,6 @@
     <div class="content__chart">
       <Chart/>
     </div>
-
   </div>
 </template>
 

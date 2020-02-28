@@ -8,25 +8,29 @@ class Axis extends Color {
     }
     this.ctx = ctx;
     this.canvas = this.ctx.canvas;
-    this.x = x;
-    this.y = y;
+    this.centerX = x;
+    this.centerY = y;
     this.size = 1;
     this.zoom = 5;
     this.baseStep = 5;
+    this.drawStep = 0.5;
     this.curStep = this.baseStep * this.zoom;
   }
   setOrign(x, y) {
-    this.x = x;
-    this.y = y;
+    this.centerX = x;
+    this.centerY = y;
   }
   setZoom(num) {
     this.zoom = num <= 0 ? 1 : num;
     this.curStep = this.baseStep * this.zoom;
   }
-  setStep(num) {
+  setBaseStep(num) {
     this.baseStep = num;
   }
-  setCenterSize(size) {
+  setDrawStep(num) {
+    this.drawStep = num;
+  }
+  circleRadius(size) {
     this.size = size;
   }
   draw() {
@@ -34,16 +38,16 @@ class Axis extends Color {
     this.drawBaseLines();
   }
   drawCenter() {
-    const { ctx, x, y, size } = this;
+    const { ctx, centerX, centerY, size } = this;
     ctx.beginPath();
-    ctx.arc(x, y, size, 0, 2 * Math.PI);
+    ctx.arc(centerX, centerY, size, 0, 2 * Math.PI);
     ctx.fill();
     ctx.closePath();
   }
   drawBackgroundGrid() {
     const { curStep } = this;
-    let x = this.y;
-    let y = this.x;
+    let x = this.centerY;
+    let y = this.centerX;
     while (y > 0) {
       this.drawLines("y", (y -= curStep));
     }
@@ -63,7 +67,7 @@ class Axis extends Color {
     this.drawStepOnLine("x");
     this.drawStepOnLine("y");
   }
-  drawLines(way, x = this.x, y = this.y) {
+  drawLines(way, x = this.centerX, y = this.centerY) {
     const { ctx } = this;
     ctx.beginPath();
     if (way === "x") {
@@ -77,24 +81,24 @@ class Axis extends Color {
     ctx.closePath();
   }
   drawStepOnLine(way) {
-    const { ctx, x, y, curStep, size } = this;
+    const { ctx, centerX, centerY, curStep, size } = this;
     let count = 1;
     let point;
     const general = [size / 2, 0, 2 * Math.PI];
     ctx.beginPath();
     if (way === "y") {
-      point = y - curStep;
+      point = centerY - curStep;
       while (point > 0) {
-        ctx.arc(x, point, ...general);
-        ctx.arc(x, point + count * curStep * 2, ...general);
+        ctx.arc(centerX, point, ...general);
+        ctx.arc(centerX, point + count * curStep * 2, ...general);
         point -= curStep;
         ++count;
       }
     } else if (way === "x") {
-      point = x - curStep;
+      point = centerX - curStep;
       while (point > 0) {
-        ctx.arc(point, y, ...general);
-        ctx.arc(point + count * curStep * 2, y, ...general);
+        ctx.arc(point, centerY, ...general);
+        ctx.arc(point + count * curStep * 2, centerY, ...general);
         point -= curStep;
         ++count;
       }
